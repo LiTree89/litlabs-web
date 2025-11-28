@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLAMFLOW AI - GODMODE Control Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .godmode-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .godmode-sidebar {
+            background: #0a0a0a;
+            border-right: 2px solid #ff0080;
+            padding: 2rem 0;
+            overflow-y: auto;
+        }
+
+        .godmode-logo {
+            padding: 0 1.5rem 2rem;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff0080, #ff8c00, #40e0d0, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 5px #ff0080); }
+            50% { filter: drop-shadow(0 0 15px #40e0d0); }
+        }
+
+        .godmode-menu {
+            list-style: none;
+        }
+
+        .godmode-menu li {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+            margin: 0.5rem 0;
+        }
+
+        .godmode-menu li:hover {
+            border-left-color: #ff0080;
+            background: rgba(255, 0, 128, 0.1);
+            color: #00d4ff;
+        }
+
+        .godmode-menu li.active {
+            border-left-color: #40e0d0;
+            color: #ff0080;
+            font-weight: 700;
+            background: rgba(64, 224, 208, 0.1);
+        }
+
+        .godmode-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .godmode-header {
+            background: linear-gradient(135deg, #ff0080 0%, #ff8c00 50%, #40e0d0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(255, 0, 128, 0.3);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .control-box {
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(64, 224, 208, 0.1) 100%);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.2);
+        }
+
+        .control-box h3 {
+            color: #ff0080;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .control-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-input label {
+            color: #40e0d0;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .control-input input,
+        .control-input textarea,
+        .control-input select {
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid #40e0d0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: #00d4ff;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .control-input input:focus,
+        .control-input textarea:focus,
+        .control-input select:focus {
+            outline: none;
+            border-color: #ff0080;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(64, 224, 208, 0.2);
+            color: #40e0d0;
+            border: 1px solid #40e0d0;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(64, 224, 208, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(255, 0, 128, 0.3);
+            color: #ff0080;
+            border: 1px solid #ff0080;
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 0, 128, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(255, 0, 128, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff0080, #40e0d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #40e0d0;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .info-box {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 4px solid #40e0d0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            color: #00d4ff;
+        }
+
+        .logout-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .table tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .success {
+            color: #40e0d0;
+        }
+
+        .error {
+            color: #ff0080;
+        }
+
+        .warning {
+            color: #ff8c00;
+        }
+    </style>
+</head>
+<body>
+    <div class="godmode-container">
+        <!-- Sidebar -->
+        <div class="godmode-sidebar">
+            <div class="godmode-logo">🔥 GODMODE</div>
+            <ul class="godmode-menu">
+                <li class="active" onclick="switchSection('dashboard')">📊 Dashboard</li>
+                <li onclick="switchSection('users')">👥 User Manager</li>
+                <li onclick="switchSection('platform')">⚙️ Platform Config</li>
+                <li onclick="switchSection('content')">📝 Content Control</li>
+                <li onclick="switchSection('security')">🔐 Security</li>
+                <li onclick="switchSection('analytics')">📈 Analytics</li>
+                <li onclick="switchSection('advanced')">🔧 Advanced</li>
+                <li onclick="logout()" style="color: #ff0080; margin-top: 2rem;">🚪 Logout</li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="godmode-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <div class="godmode-header">📊 GODMODE Dashboard</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-users">47</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-active">12</div>
+                        <div class="stat-label">Active Now</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-chats">284</div>
+                        <div class="stat-label">Total Chats</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-revenue">$2.4K</div>
+                        <div class="stat-label">Revenue (30d)</div>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>🎯 Quick Stats</h3>
+                    <p style="color: #40e0d0; line-height: 1.8;">
+                        ✅ Platform Status: <span class="success">ONLINE</span><br>
+                        ✅ API Health: <span class="success">HEALTHY</span><br>
+                        ✅ Database: <span class="success">CONNECTED</span><br>
+                        ✅ Last Backup: <span class="warning">2 hours ago</span>
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    💡 <strong>Welcome to GODMODE!</strong> You now have full control over the platform. Use the menu to manage users, configure settings, and monitor analytics.
+                </div>
+            </div>
+
+            <!-- User Manager -->
+            <div id="users" class="section">
+                <div class="godmode-header">👥 User Management</div>
+                
+                <div class="control-box">
+                    <h3>🔍 Search & Filter</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Search by Email</label>
+                            <input type="text" placeholder="user@example.com">
+                        </div>
+                        <div class="control-input">
+                            <label>Filter by Status</label>
+                            <select>
+                                <option>All Users</option>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                                <option>Suspended</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>📋 User List</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Business</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Chats</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>sarah@salon.com</td>
+                                <td>Sarah's Beauty Salon</td>
+                                <td><span class="success">Active</span></td>
+                                <td>2025-01-15</td>
+                                <td>89</td>
+                                <td><button class="btn btn-secondary" style="width: 80px; padding: 0.5rem;">Edit</button></td>
+                            </tr>
+                            <tr>
+                                <td>maria@makeup.com</td>
+                                <td>Maria Makeup Artist</td>
+                                <td><span class="success">Active</span></td>
+                                <td>2025-01-10</td>
+                                <td>156</td>
+                                <td><button class="btn btn-secondary" style="width: 80px; padding: 0.5rem;">Edit</button></td>
+                            </tr>
+                            <tr>
+                                <td>jessica@hair.com</td>
+                                <td>Jessica Hair Studio</td>
+                                <td><span class="success">Active</span></td>
+                                <td>2025-01-08</td>
+                                <td>203</td>
+                                <td><button class="btn btn-secondary" style="width: 80px; padding: 0.5rem;">Edit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="control-box">
+                    <h3>➕ Add New User</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Email</label>
+                            <input type="email" placeholder="user@example.com">
+                        </div>
+                        <div class="control-input">
+                            <label>Business Name</label>
+                            <input type="text" placeholder="Beauty Business">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ User created!')">Create User</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Platform Config -->
+            <div id="platform" class="section">
+                <div class="godmode-header">⚙️ Platform Configuration</div>
+                
+                <div class="control-box">
+                    <h3>🌐 Website Settings</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Site Title</label>
+                            <input type="text" value="GLAMFLOW AI" placeholder="Site Title">
+                        </div>
+                        <div class="control-input">
+                            <label>Support Email</label>
+                            <input type="email" value="support@glamflow.ai" placeholder="support@example.com">
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Trial Days</label>
+                            <input type="number" value="7" min="1" max="30">
+                        </div>
+                        <div class="control-input">
+                            <label>Max Chatbots Per User</label>
+                            <input type="number" value="3" min="1">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Settings saved!')">Save Changes</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>💳 Pricing Plans</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Free Plan - Monthly Limit</label>
+                            <input type="number" value="1000" placeholder="Messages per month">
+                        </div>
+                        <div class="control-input">
+                            <label>Pro Plan - Price ($)</label>
+                            <input type="number" value="29" step="0.01">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Pricing updated!')">Update Pricing</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>🤖 Chatbot AI Settings</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>AI Model</label>
+                            <select>
+                                <option>GPT-4 Turbo</option>
+                                <option>GPT-3.5</option>
+                                <option>Claude 3</option>
+                            </select>
+                        </div>
+                        <div class="control-input">
+                            <label>Response Speed (ms)</label>
+                            <input type="number" value="500" min="100" max="5000">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ AI settings updated!')">Save AI Config</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Control -->
+            <div id="content" class="section">
+                <div class="godmode-header">📝 Content Control</div>
+                
+                <div class="control-box">
+                    <h3>📰 Edit Landing Page Copy</h3>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>Hero Title</label>
+                        <input type="text" value="Your AI Beauty Business Assistant" placeholder="Hero Title">
+                    </div>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>Hero Subtitle</label>
+                        <textarea placeholder="Hero Subtitle">Never miss a customer message again. Our chatbot answers customer questions 24/7</textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Landing page updated!')">Update Landing Page</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>📧 Email Templates</h3>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>Welcome Email Subject</label>
+                        <input type="text" value="Welcome to GLAMFLOW AI!" placeholder="Subject">
+                    </div>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>Welcome Email Body</label>
+                        <textarea placeholder="Email body here..."></textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Email template updated!')">Save Template</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>🎨 Theme & Branding</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Primary Color</label>
+                            <input type="color" value="#ff0080">
+                        </div>
+                        <div class="control-input">
+                            <label>Secondary Color</label>
+                            <input type="color" value="#40e0d0">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Theme updated!')">Apply Theme</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security -->
+            <div id="security" class="section">
+                <div class="godmode-header">🔐 Security & Access</div>
+                
+                <div class="control-box">
+                    <h3>🔑 Admin Credentials</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Access Code</label>
+                            <input type="text" value="Around360" placeholder="Access code">
+                        </div>
+                        <div class="control-input">
+                            <label>Master Key</label>
+                            <input type="password" value="!!litree!!" placeholder="Master key">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Credentials updated!')">Update Credentials</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>🚫 Blocked Users</h3>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>Add Email to Blocklist</label>
+                        <input type="email" placeholder="user@example.com">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-danger" onclick="alert('✅ User blocked!')">Block User</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>📋 Audit Log</h3>
+                    <p style="color: #40e0d0; line-height: 1.8;">
+                        ✓ 2025-01-28 14:32 - Admin login from 192.168.1.1<br>
+                        ✓ 2025-01-28 14:15 - User sarah@salon.com created chatbot<br>
+                        ✓ 2025-01-28 14:00 - Payment processed: $29.00<br>
+                        ✓ 2025-01-28 13:45 - System backup completed
+                    </p>
+                </div>
+            </div>
+
+            <!-- Analytics -->
+            <div id="analytics" class="section">
+                <div class="godmode-header">📈 Analytics & Reports</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">847K</div>
+                        <div class="stat-label">Page Views (30d)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12.3%</div>
+                        <div class="stat-label">Conversion Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2.4M</div>
+                        <div class="stat-label">Messages Processed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">98.5%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>📊 Performance Metrics</h3>
+                    <p style="color: #40e0d0; line-height: 2;">
+                        <strong>Response Time:</strong> <span class="success">234ms avg</span><br>
+                        <strong>Chatbot Accuracy:</strong> <span class="success">94.2%</span><br>
+                        <strong>User Satisfaction:</strong> <span class="success">4.8/5 stars</span><br>
+                        <strong>Chat Resolution Rate:</strong> <span class="success">87%</span>
+                    </p>
+                </div>
+
+                <div class="control-box">
+                    <h3>📉 Generate Reports</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('📥 Downloading monthly report...')">Monthly Report</button>
+                        <button class="btn btn-primary" onclick="alert('📥 Downloading user report...')">User Analytics</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced -->
+            <div id="advanced" class="section">
+                <div class="godmode-header">🔧 Advanced Settings</div>
+                
+                <div class="control-box">
+                    <h3>🗄️ Database Management</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Database optimized!')">Optimize Database</button>
+                        <button class="btn btn-secondary" onclick="alert('✅ Backup started...')">Backup Now</button>
+                        <button class="btn btn-danger" onclick="alert('⚠️ Are you sure? This will clear all test data.')">Clear Test Data</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>🔌 API Integration</h3>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>Stripe API Key</label>
+                        <input type="password" placeholder="sk_live_xxxxx">
+                    </div>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>SendGrid API Key</label>
+                        <input type="password" placeholder="SG.xxxxx">
+                    </div>
+                    <div class="control-input" style="margin-bottom: 1rem;">
+                        <label>OpenAI API Key</label>
+                        <input type="password" placeholder="sk-xxxxx">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ API keys updated!')">Save API Keys</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>⚡ Performance Tuning</h3>
+                    <div class="control-row">
+                        <div class="control-input">
+                            <label>Max Concurrent Users</label>
+                            <input type="number" value="10000" min="100">
+                        </div>
+                        <div class="control-input">
+                            <label>Cache TTL (seconds)</label>
+                            <input type="number" value="3600" min="60">
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="alert('✅ Performance settings updated!')">Apply Settings</button>
+                    </div>
+                </div>
+
+                <div class="control-box">
+                    <h3>🔄 System Maintenance</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="alert('✅ Clearing cache...')">Clear Cache</button>
+                        <button class="btn btn-secondary" onclick="alert('✅ Restarting services...')">Restart Services</button>
+                        <button class="btn btn-warning" onclick="alert('✅ Scheduled maintenance set')">Schedule Maintenance</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logout Section -->
+            <div class="logout-section">
+                <button class="btn btn-danger" onclick="logout()" style="width: 100%;">🚪 Logout from GODMODE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check admin access
+        function checkAdminAccess() {
+            const adminToken = sessionStorage.getItem('glamflow_admin_token');
+            if (!adminToken) {
+                alert('❌ Unauthorized access!');
+                window.location.href = '/index.html';
+                return;
+            }
+        }
+
+        function switchSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all menu items
+            document.querySelectorAll('.godmode-menu li').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active to clicked menu item
+            event.target.classList.add('active');
+        }
+
+        function logout() {
+            if (confirm('🚪 Exit GODMODE and return to login?')) {
+                sessionStorage.removeItem('glamflow_admin_token');
+                window.location.href = '/index.html';
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', checkAdminAccess);
+    </script>
+</body>
+</html>
