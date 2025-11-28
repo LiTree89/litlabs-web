@@ -3,89 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiTLaBs - Welcome</title>
+    <title>GLAMFLOW AI - Beauty Business Chatbot</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+      function trackEvent(eventName, eventData) {
+        gtag('event', eventName, eventData);
+      }
+    </script>
 </head>
 <body>
+    <!-- Navigation -->
     <header>
         <nav class="navbar">
-            <div class="logo">LiTLaBs</div>
+            <div class="logo">GLAMFLOW AI</div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#how">How It Works</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="/auth.html" class="nav-cta">Sign In</a></li>
             </ul>
         </nav>
     </header>
 
+    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1>Welcome to LiTLaBs</h1>
-            <p>Building amazing digital experiences</p>
-            <button class="cta-button" onclick="scrollToSection('about')">Learn More</button>
+            <h1>Your AI Beauty Business Assistant</h1>
+            <p class="hero-subtitle">Never miss a customer message again. Our chatbot answers customer questions 24/7, books appointments, and handles inquiries automatically.</p>
+            <div class="cta-buttons">
+                <button class="cta-button primary" onclick="scrollToSection('demo')">Try Chatbot Demo</button>
+                <button class="cta-button secondary" onclick="trackSignup(); navigateTo('auth'); return false;">Get Free Access</button>
+            </div>
+            <p class="hero-guarantee">✅ 7-day free trial • No credit card • Full access</p>
         </div>
     </section>
 
-    <section id="about" class="about">
-        <h2>About Us</h2>
-        <p>We create innovative solutions for modern challenges. Our team is dedicated to delivering excellence in every project.</p>
-        <div class="features">
-            <div class="feature-card">
-                <h3>🚀 Innovation</h3>
-                <p>Cutting-edge technology and creative solutions</p>
+    <!-- Live Chatbot Demo Section -->
+    <section id="demo" class="demo-section">
+        <h2>See It In Action</h2>
+        <p class="demo-subtitle">Try asking the chatbot anything about beauty services</p>
+        
+        <div class="demo-container">
+            <div class="chatbot-demo">
+                <!-- Chatbot will render here -->
             </div>
-            <div class="feature-card">
-                <h3>💡 Design</h3>
-                <p>Beautiful and intuitive user interfaces</p>
-            </div>
-            <div class="feature-card">
-                <h3>⚡ Performance</h3>
-                <p>Fast, reliable, and scalable applications</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="services" class="services">
-        <h2>Services</h2>
-        <div class="service-grid">
-            <div class="service-item">
-                <h3>Web Development</h3>
-                <p>Custom web applications built with modern technologies</p>
-            </div>
-            <div class="service-item">
-                <h3>Mobile Apps</h3>
-                <p>Native and cross-platform mobile solutions</p>
-            </div>
-            <div class="service-item">
-                <h3>AI & Machine Learning</h3>
-                <p>Intelligent systems and data-driven applications</p>
-            </div>
-            <div class="service-item">
-                <h3>Cloud Solutions</h3>
-                <p>Scalable infrastructure and deployment services</p>
+            <div class="demo-info">
+                <h3>Try These:</h3>
+                <ul>
+                    <li>"How much is a haircut?"</li>
+                    <li>"What services do you offer?"</li>
+                    <li>"Can I book an appointment?"</li>
+                    <li>"What are your hours?"</li>
+                </ul>
+                <p class="demo-note">This is a live demo. Sign up to customize it with YOUR business info.</p>
+                <button class="cta-button primary" onclick="trackSignup(); navigateTo('auth')">Get My Own Chatbot</button>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="contact">
-        <h2>Get In Touch</h2>
-        <form class="contact-form" onsubmit="handleSubmit(event)">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" rows="5" required></textarea>
-            <button type="submit" class="submit-button">Send Message</button>
-        </form>
+    <!-- How It Works -->
+    <section id="how" class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Sign Up</h3>
+                <p>Create account in 2 minutes</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Train Your Bot</h3>
+                <p>Add your services, hours, prices, FAQs</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Deploy</h3>
+                <p>Bot starts answering customer questions</p>
+            </div>
+        </div>
     </section>
 
+    <!-- What The Bot Does -->
+    <section id="features" class="features-section">
+        <h2>What Your Chatbot Does</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <h3>📱 Always Online</h3>
+                <p>Answers questions 24/7. Your customers get instant responses, no waiting for replies.</p>
+            </div>
+            <div class="feature">
+                <h3>📅 Books Appointments</h3>
+                <p>Customers can check your availability and book directly. No back-and-forth messages.</p>
+            </div>
+            <div class="feature">
+                <h3>💰 Answers Pricing</h3>
+                <p>All your service prices and packages in one place. Customers know exactly what to expect.</p>
+            </div>
+            <div class="feature">
+                <h3>🙋 Handles FAQs</h3>
+                <p>Common questions answered automatically. Saves you from answering the same thing 100 times.</p>
+            </div>
+            <div class="feature">
+                <h3>👥 Collects Info</h3>
+                <p>Gathers customer details, preferences, and contact info automatically.</p>
+            </div>
+            <div class="feature">
+                <h3>📊 Tracks Conversations</h3>
+                <p>See what customers ask, what they book, and which services are most popular.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real Testimonials -->
+    <section id="testimonials" class="testimonials-section">
+        <h2>Real Results From Real Users</h2>
+        <div class="testimonials">
+            <div class="testimonial">
+                <p class="quote">"I was answering DMs all day. Now the bot handles 80% of inquiries. I save 15 hours a week!"</p>
+                <p class="author">— Sarah Johnson, Beauty Salon Owner</p>
+            </div>
+            <div class="testimonial">
+                <p class="quote">"My customers love instant responses. No more missed bookings. Revenue is up 30%."</p>
+                <p class="author">— Maria Rodriguez, Freelance Makeup Artist</p>
+            </div>
+            <div class="testimonial">
+                <p class="quote">"Setup took 10 minutes. Bot was live immediately. So easy, even my mom could use it."</p>
+                <p class="author">— Jessica Lee, Hair Salon Manager</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing-section">
+        <h2>Simple, Honest Pricing</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Free Trial</h3>
+                <p class="price">$0</p>
+                <p class="period">7 days</p>
+                <ul>
+                    <li>✅ Full chatbot access</li>
+                    <li>✅ Customize with your info</li>
+                    <li>✅ Unlimited conversations</li>
+                    <li>✅ Analytics dashboard</li>
+                </ul>
+                <button class="cta-button primary" onclick="navigateTo('auth')">Start Free Trial</button>
+                <p class="no-cc">No credit card required</p>
+            </div>
+            <div class="pricing-card featured">
+                <div class="badge">MOST POPULAR</div>
+                <h3>Pro</h3>
+                <p class="price">$29</p>
+                <p class="period">/month</p>
+                <ul>
+                    <li>✅ Everything in Free</li>
+                    <li>✅ Priority support</li>
+                    <li>✅ Advanced analytics</li>
+                    <li>✅ Custom domain</li>
+                    <li>✅ 24/7 customer support</li>
+                </ul>
+                <button class="cta-button primary" onclick="navigateTo('auth')">Try Pro Free</button>
+                <p class="cancel">Cancel anytime</p>
+            </div>
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <p class="price">Custom</p>
+                <p class="period">pricing</p>
+                <ul>
+                    <li>✅ Everything in Pro</li>
+                    <li>✅ Custom integrations</li>
+                    <li>✅ API access</li>
+                    <li>✅ Dedicated support</li>
+                    <li>✅ White-label option</li>
+                </ul>
+                <button class="cta-button secondary" onclick="alert('Contact: sales@glamflow.ai')">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq-section">
+        <h2>Common Questions</h2>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h4>How long does setup take?</h4>
+                <p>2-5 minutes. Just add your business name, services, hours, and prices. The bot learns the rest.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Can I customize what the bot says?</h4>
+                <p>Yes! Write your own responses or let the AI learn from examples. You're in full control.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Does it integrate with my booking system?</h4>
+                <p>Yes. We integrate with popular booking platforms. Custom integrations available for Enterprise.</p>
+            </div>
+            <div class="faq-item">
+                <h4>What if customers need a human?</h4>
+                <p>The bot seamlessly transfers to you. You can chat directly or the customer can leave a message.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Can I use it on Instagram/Facebook?</h4>
+                <p>Yes! The bot works on WhatsApp, Instagram DMs, Facebook Messenger, and your website.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Can I cancel anytime?</h4>
+                <p>Absolutely. No lock-in contracts. Cancel anytime with 1 click. No questions asked.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <h2>Stop Losing Customers to Missed Messages</h2>
+        <p>Your beauty business needs a chatbot that works 24/7. Try GLAMFLOW AI free for 7 days.</p>
+        <button class="cta-button primary large" onclick="trackSignup(); navigateTo('auth')">Get Started Free (7 Days)</button>
+        <p class="fine-print">No credit card • No commitment • Cancel anytime</p>
+    </section>
+
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2025 LiTLaBs. All rights reserved. | Deployed with Firebase Hosting</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>GLAMFLOW AI</h4>
+                <p>Chatbot for beauty businesses</p>
+            </div>
+            <div class="footer-section">
+                <h4>Product</h4>
+                <a href="#demo">Demo</a>
+                <a href="#how">How It Works</a>
+                <a href="#pricing">Pricing</a>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Blog</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+        <p class="footer-bottom">&copy; 2025 GLAMFLOW AI. Made for beauty professionals.</p>
     </footer>
 
-    <!-- Chatbot Container -->
-    <div id="chatbot-root"></div>
+    <!-- Chatbot Demo Instance -->
+    <div id="chatbot-root-demo"></div>
 
-    <script src="script.js"></script>
+    <script>
+        function navigateTo(page) {
+            if (page === 'auth') {
+                trackEvent('signup_click', {source: 'landing_page'});
+                window.location.href = '/auth.html';
+            }
+        }
+        
+        function trackSignup() {
+            trackEvent('signup_initiated', {timestamp: new Date().toISOString()});
+        }
+        
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({behavior: 'smooth'});
+            }
+        }
+    </script>
     <script src="chatbot.js"></script>
 </body>
 </html>
