@@ -18,12 +18,20 @@ const loadingOverlay = document.getElementById('loading-overlay');
 googleBtn.addEventListener('click', async () => {
     try {
         showLoading(true);
+        trackEvent('google_signin_start', {});
         const provider = new firebase.auth.GoogleAuthProvider();
         provider.addScope('profile');
         provider.addScope('email');
         
         const result = await auth.signInWithPopup(provider);
         const user = result.user;
+        
+        // Track successful sign in
+        trackEvent('google_signin_success', {
+            user_id: user.uid,
+            email: user.email,
+            timestamp: new Date().toISOString()
+        });
         
         // Create user profile in Firestore
         await createUserProfile(user);
@@ -34,6 +42,7 @@ googleBtn.addEventListener('click', async () => {
             window.location.href = 'dashboard.html';
         }, 1500);
     } catch (error) {
+        trackEvent('google_signin_error', {error: error.message});
         showError(error.message || 'Google sign-in failed');
         showLoading(false);
     }
@@ -47,7 +56,9 @@ emailForm.addEventListener('submit', async (e) => {
     
     try {
         showLoading(true);
+        trackEvent('email_signin_start', {email});
         await auth.signInWithEmailAndPassword(email, password);
+        trackEvent('email_signin_success', {email, timestamp: new Date().toISOString()});
         showSuccess('Sign in successful! Redirecting...');
         setTimeout(() => {
             window.location.href = 'dashboard.html';
@@ -67,10 +78,19 @@ signupForm.addEventListener('submit', async (e) => {
     
     try {
         showLoading(true);
+        trackEvent('signup_start', {email, name});
         
         // Create user account
         const result = await auth.createUserWithEmailAndPassword(email, password);
         const user = result.user;
+        
+        // Track successful signup (conversion event)
+        trackEvent('sign_up', {
+            method: 'email',
+            user_id: user.uid,
+            email: email,
+            timestamp: new Date().toISOString()
+        });
         
         // Update profile with name
         await user.updateProfile({ displayName: name });
@@ -78,11 +98,13 @@ signupForm.addEventListener('submit', async (e) => {
         // Create user profile in Firestore
         await createUserProfile(user);
         
+        trackEvent('onboarding_complete', {user_id: user.uid});
         showSuccess('Account created! Redirecting to dashboard...');
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 1500);
     } catch (error) {
+        trackEvent('signup_error', {error: error.message});
         showError(error.message || 'Sign up failed');
         showLoading(false);
     }

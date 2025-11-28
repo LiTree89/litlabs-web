@@ -15,6 +15,17 @@
     </script>
 </head>
 <body class="login-page">
+    <!-- MAINTENANCE BANNER -->
+    <div style="background: linear-gradient(135deg, #ff0080, #ff8c00); padding: 1.5rem; text-align: center; position: fixed; top: 0; width: 100%; z-index: 10000; box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <p style="color: white; font-size: 1.1rem; font-weight: 700; margin: 0;">
+                🔥 <strong>ACTIVELY UPDATING!</strong> We're in a huge push for major updates. Thank you for your patience! 
+                <br>
+                <span style="font-size: 0.95rem; opacity: 0.9;">📧 Questions or concerns? Reach out: <strong>laidbacknostress4life@gmail.com</strong></span>
+            </p>
+        </div>
+    </div>
+    <div style="height: 100px;"></div>
     <div class="login-container">
         <div class="login-box">
             <div class="login-header">
@@ -314,6 +325,104 @@
             setTimeout(animateDemo, 2000);
         });
     </script>
+
+    <!-- PRICING & BUY NOW MODAL -->
+    <div id="pricingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 5000; align-items: center; justify-content: center; flex-direction: column;">
+        <div style="background: #0a0a0a; border: 2px solid #ff0080; border-radius: 15px; padding: 3rem; max-width: 900px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 0 50px rgba(255, 0, 128, 0.5);">
+            <button onclick="closePricingModal()" style="float: right; background: none; border: none; color: #ff0080; font-size: 2rem; cursor: pointer;">✕</button>
+            
+            <h2 style="background: linear-gradient(135deg, #ff0080, #40e0d0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2.5rem; margin-bottom: 3rem;">💎 Choose Your Plan</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <!-- FREE TRIAL -->
+                <div style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(64, 224, 208, 0.1)); border: 2px solid #40e0d0; border-radius: 12px; padding: 2rem; text-align: center; transition: all 0.3s;">
+                    <h3 style="color: #40e0d0; margin-bottom: 1rem; font-size: 1.5rem;">🚀 Free Trial</h3>
+                    <p style="color: #ff0080; font-size: 2.5rem; font-weight: 900; margin: 1rem 0;"></p>
+                    <p style="color: #00d4ff; margin-bottom: 1rem;">7 days free</p>
+                    <ul style="text-align: left; color: #40e0d0; margin: 1.5rem 0; line-height: 2;">
+                        <li>✅ 1,000 messages/month</li>
+                        <li>✅ 1 chatbot</li>
+                        <li>✅ Basic analytics</li>
+                        <li>✅ Email support</li>
+                    </ul>
+                    <button onclick="buyPlan('free')" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #ff0080, #ff8c00); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 1rem;">🎉 Start Free Trial</button>
+                </div>
+
+                <!-- PRO -->
+                <div style="background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(255, 140, 0, 0.1)); border: 2px solid #ff0080; border-radius: 12px; padding: 2rem; text-align: center; transform: scale(1.05); transition: all 0.3s;">
+                    <div style="background: #ff0080; color: white; padding: 0.5rem; border-radius: 5px; margin-bottom: 1rem; font-weight: 700;">⭐ MOST POPULAR</div>
+                    <h3 style="color: #ff0080; margin-bottom: 1rem; font-size: 1.5rem;">💼 Pro</h3>
+                    <p style="color: #ff8c00; font-size: 2.5rem; font-weight: 900; margin: 1rem 0;"><span style="font-size: 1rem;">/mo</span></p>
+                    <ul style="text-align: left; color: #40e0d0; margin: 1.5rem 0; line-height: 2;">
+                        <li>✅ 50,000 messages/month</li>
+                        <li>✅ 3 chatbots</li>
+                        <li>✅ Advanced analytics</li>
+                        <li>✅ Priority support</li>
+                        <li>✅ Custom branding</li>
+                    </ul>
+                    <button onclick="buyPlan('pro')" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #ff0080, #ff8c00); color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 1rem;">💳 Buy Now - /mo</button>
+                </div>
+
+                <!-- ENTERPRISE -->
+                <div style="background: linear-gradient(135deg, rgba(64, 224, 208, 0.1), rgba(0, 212, 255, 0.1)); border: 2px solid #00d4ff; border-radius: 12px; padding: 2rem; text-align: center; transition: all 0.3s;">
+                    <h3 style="color: #00d4ff; margin-bottom: 1rem; font-size: 1.5rem;">🏆 Enterprise</h3>
+                    <p style="color: #40e0d0; font-size: 2.5rem; font-weight: 900; margin: 1rem 0;">Custom</p>
+                    <p style="color: #00d4ff; margin-bottom: 1rem;">Talk to us</p>
+                    <ul style="text-align: left; color: #40e0d0; margin: 1.5rem 0; line-height: 2;">
+                        <li>✅ Unlimited messages</li>
+                        <li>✅ Unlimited chatbots</li>
+                        <li>✅ Full analytics suite</li>
+                        <li>✅ 24/7 dedicated support</li>
+                        <li>✅ API access</li>
+                    </ul>
+                    <button onclick="buyPlan('enterprise')" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #40e0d0, #00d4ff); color: black; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 1rem;">📞 Contact Sales</button>
+                </div>
+            </div>
+            
+            <p style="text-align: center; color: #40e0d0; font-size: 1.1rem;">
+                ❓ Questions? 📧 <strong>laidbacknostress4life@gmail.com</strong>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function openPricingModal() {
+            document.getElementById('pricingModal').style.display = 'flex';
+        }
+
+        function closePricingModal() {
+            document.getElementById('pricingModal').style.display = 'none';
+        }
+
+        function buyPlan(plan) {
+            if (plan === 'free') {
+                alert('🎉 Starting free trial!\n\nPlease sign up to get started.');
+                closePricingModal();
+                document.getElementById('signup-form').classList.add('active');
+                document.getElementById('signin-form').classList.remove('active');
+            } else if (plan === 'pro') {
+                alert('💳 Proceeding to checkout...\n\nPlan: Pro - /month\n\n🔒 Secure payment processing...');
+                closePricingModal();
+            } else if (plan === 'enterprise') {
+                alert('📞 Sales contact opened!\n\nWe\'ll be in touch at:\nlaidbacknostress4life@gmail.com\n\nCheck your email soon!');
+                closePricingModal();
+            }
+        }
+
+        // Add Buy Now button to the page
+        window.addEventListener('load', function() {
+            const buyBtn = document.createElement('button');
+            buyBtn.innerHTML = '💳 Buy Now';
+            buyBtn.style.cssText = 'position: fixed; top: 120px; right: 2rem; background: linear-gradient(135deg, #ff0080, #ff8c00); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; z-index: 4999; box-shadow: 0 0 30px rgba(255, 0, 128, 0.5); transition: all 0.3s;';
+            buyBtn.onmouseover = function() { this.style.transform = 'translateY(-3px)'; this.style.boxShadow = '0 0 50px rgba(255, 0, 128, 0.8)'; };
+            buyBtn.onmouseout = function() { this.style.transform = 'translateY(0)'; this.style.boxShadow = '0 0 30px rgba(255, 0, 128, 0.5)'; };
+            buyBtn.onclick = openPricingModal;
+            document.body.appendChild(buyBtn);
+        });
+    </script>
 </body>
 </html>
+
+
+
 
