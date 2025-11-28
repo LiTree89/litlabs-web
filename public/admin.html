@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLAMFLOW AI - Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ff0080;
+        }
+
+        .admin-header h1 {
+            color: #00d4ff;
+            margin: 0;
+            background: linear-gradient(135deg, #ff0080, #ff8c00, #40e0d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .admin-card {
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(64, 224, 208, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.2);
+        }
+
+        .admin-card h3 {
+            color: #ff0080;
+            margin-top: 0;
+        }
+
+        .admin-card p {
+            color: #00d4ff;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+
+        .users-table thead {
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+        }
+
+        .users-table th {
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .users-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .users-table tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+        }
+
+        .action-btn.edit {
+            background: #40e0d0;
+            color: #1a1a2e;
+        }
+
+        .action-btn.delete {
+            background: #ff0080;
+            color: white;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section h2 {
+            color: #ff0080;
+            border-bottom: 2px solid #40e0d0;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="dark-page">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🔐 GLAMFLOW Admin Panel</h1>
+            <button class="logout-btn" onclick="adminLogout()">Logout</button>
+        </div>
+
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h3>Total Users</h3>
+                <p id="total-users">0</p>
+                <p style="font-size: 1rem; color: #40e0d0;">Active accounts</p>
+            </div>
+            <div class="admin-card">
+                <h3>Active This Week</h3>
+                <p id="active-users">0</p>
+                <p style="font-size: 1rem; color: #40e0d0;">Last 7 days</p>
+            </div>
+            <div class="admin-card">
+                <h3>Conversations</h3>
+                <p id="total-conversations">0</p>
+                <p style="font-size: 1rem; color: #40e0d0;">All time</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Manage Users</h2>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Business Name</th>
+                        <th>Created</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #40e0d0;">Loading users...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Quick Stats</h2>
+            <div style="background: rgba(0, 212, 255, 0.05); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff0080;">
+                <p style="color: #00d4ff; margin: 0.5rem 0;">
+                    <strong>Master Access Key:</strong> GLAMFLOW_MASTER_2025
+                </p>
+                <p style="color: #40e0d0; margin: 0.5rem 0; font-size: 0.9rem;">
+                    💡 Tip: Type "GLAMFLOW" on the login page then enter the master key
+                </p>
+                <p style="color: #ff0080; margin: 1rem 0 0 0;">
+                    ⚠️ Keep this key secure. Never share it publicly.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if user has admin access
+        function checkAdminAccess() {
+            const adminToken = sessionStorage.getItem('glamflow_admin_token');
+            if (!adminToken) {
+                alert('Unauthorized. Redirecting to login...');
+                window.location.href = '/index.html';
+            }
+        }
+
+        function adminLogout() {
+            sessionStorage.removeItem('glamflow_admin_token');
+            window.location.href = '/index.html';
+        }
+
+        // Load mock data for now
+        function loadAdminData() {
+            document.getElementById('total-users').textContent = '47';
+            document.getElementById('active-users').textContent = '12';
+            document.getElementById('total-conversations').textContent = '284';
+
+            const mockUsers = [
+                { email: 'sarah@salon.com', business: 'Sarah\'s Beauty Salon', created: '2025-01-15', status: 'Active' },
+                { email: 'maria@makeup.com', business: 'Maria Makeup Artist', created: '2025-01-10', status: 'Active' },
+                { email: 'jessica@hair.com', business: 'Jessica Hair Studio', created: '2025-01-08', status: 'Active' },
+                { email: 'test@beauty.com', business: 'Test Business', created: '2025-01-05', status: 'Inactive' },
+            ];
+
+            const tbody = document.getElementById('users-tbody');
+            tbody.innerHTML = mockUsers.map(user => `
+                <tr>
+                    <td>${user.email}</td>
+                    <td>${user.business}</td>
+                    <td>${user.created}</td>
+                    <td><span style="color: ${user.status === 'Active' ? '#40e0d0' : '#ff0080'};">${user.status}</span></td>
+                    <td>
+                        <button class="action-btn edit" onclick="editUser('${user.email}')">Edit</button>
+                        <button class="action-btn delete" onclick="deleteUser('${user.email}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editUser(email) {
+            alert('Edit functionality coming soon for: ' + email);
+        }
+
+        function deleteUser(email) {
+            if (confirm('Are you sure you want to delete ' + email + '?')) {
+                alert('User deleted: ' + email);
+            }
+        }
+
+        // Initialize
+        checkAdminAccess();
+        loadAdminData();
+    </script>
+</body>
+</html>

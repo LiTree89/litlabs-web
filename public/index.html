@@ -166,6 +166,35 @@
         function handleForgotPassword() {
             alert('Password reset coming soon');
         }
+
+        // Admin access key system (Konami Code style)
+        let accessKeySequence = '';
+        const adminAccessKey = 'GLAMFLOW'; // Type this to access admin dashboard
+        
+        document.addEventListener('keydown', function(e) {
+            accessKeySequence += e.key.toUpperCase();
+            
+            // Keep last 8 characters
+            if (accessKeySequence.length > 8) {
+                accessKeySequence = accessKeySequence.slice(-8);
+            }
+            
+            // Check if user typed the admin key
+            if (accessKeySequence.includes(adminAccessKey)) {
+                showAccessKeyPrompt();
+                accessKeySequence = ''; // Reset
+            }
+        });
+
+        function showAccessKeyPrompt() {
+            const masterKey = prompt('Enter master access key:', '');
+            if (masterKey === 'GLAMFLOW_MASTER_2025') {
+                sessionStorage.setItem('glamflow_admin_token', 'ADMIN_' + Date.now());
+                window.location.href = '/admin.html';
+            } else if (masterKey !== null) {
+                alert('Invalid access key');
+            }
+        }
     </script>
 </body>
 </html>
