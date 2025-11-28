@@ -110,14 +110,23 @@
         <!-- Right side visual -->
         <div class="login-visual">
             <div class="visual-content">
-                <h3>GLAMFLOW AI</h3>
-                <p>Your AI Beauty Business Assistant</p>
-                <ul class="visual-features">
-                    <li>🤖 AI Chatbot - 24/7 Customer Support</li>
-                    <li>📅 Auto Booking - Schedule Appointments</li>
-                    <li>💬 Smart Responses - Trained on Your Business</li>
-                    <li>📊 Analytics - Track Every Conversation</li>
-                </ul>
+                <div class="demo-chatbot-container">
+                    <div class="chat-window">
+                        <div class="chat-header">
+                            <span style="color: #00d4ff; font-weight: bold;">💬 GLAMFLOW AI Bot</span>
+                            <span style="color: #40e0d0; font-size: 0.8rem;">Always online</span>
+                        </div>
+                        <div class="chat-messages" id="demo-chat">
+                            <div class="message bot-message">
+                                <div>👋 Hi! How can I help you today?</div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" placeholder="Type a message..." style="opacity: 0.5;">
+                            <button style="opacity: 0.5;">Send</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -195,6 +204,72 @@
                 alert('Invalid access key');
             }
         }
+
+        // Live chatbot demo animation
+        const demoConversations = [
+            {
+                user: "What services do you offer?",
+                bot: "We offer haircuts, styling, color treatments, and more!"
+            },
+            {
+                user: "Can I book an appointment?",
+                bot: "Of course! We have availability tomorrow at 2 PM or Thursday at 10 AM"
+            },
+            {
+                user: "How much is a haircut?",
+                bot: "Haircuts are $45 for a regular cut, or $65 for a style consultation"
+            },
+            {
+                user: "What are your hours?",
+                bot: "We're open Mon-Sat 9 AM - 6 PM, Sunday 10 AM - 4 PM"
+            },
+            {
+                user: "Do you offer color services?",
+                bot: "Yes! We have expert colorists. Color services start at $65 for a partial highlight"
+            }
+        ];
+
+        let conversationIndex = 0;
+
+        function animateDemo() {
+            const chatDiv = document.getElementById('demo-chat');
+            const conversation = demoConversations[conversationIndex % demoConversations.length];
+            
+            // Add user message
+            setTimeout(() => {
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user-message';
+                userMsg.innerHTML = `<div>${conversation.user}</div>`;
+                chatDiv.appendChild(userMsg);
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+            }, 500);
+
+            // Add bot response
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'message bot-message';
+                botMsg.innerHTML = `<div>${conversation.bot}</div>`;
+                chatDiv.appendChild(botMsg);
+                chatDiv.scrollTop = chatDiv.scrollHeight;
+            }, 1500);
+
+            // Clear and start next conversation
+            setTimeout(() => {
+                conversationIndex++;
+                if (chatDiv.children.length > 10) {
+                    // Keep only last 3 conversations for clean look
+                    while (chatDiv.children.length > 6) {
+                        chatDiv.removeChild(chatDiv.firstChild);
+                    }
+                }
+                animateDemo();
+            }, 4000);
+        }
+
+        // Start demo animation when page loads
+        window.addEventListener('load', () => {
+            setTimeout(animateDemo, 2000);
+        });
     </script>
 </body>
 </html>
