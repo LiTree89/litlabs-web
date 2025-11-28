@@ -4,69 +4,327 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GLAMFLOW AI - Dashboard</title>
-    <link rel="stylesheet" href="dashboard-styles.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-    <script src="firebase-config.js"></script><script src="stripe-config.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #0a0a0a;
+            border-right: 1px solid rgba(255, 0, 128, 0.3);
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            padding: 0 1.5rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff0080, #ff8c00, #40e0d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu li:hover {
+            border-left-color: #ff0080;
+            background: rgba(255, 0, 128, 0.1);
+            color: #00d4ff;
+        }
+
+        .sidebar-menu li.active {
+            border-left-color: #ff0080;
+            color: #40e0d0;
+            font-weight: 600;
+        }
+
+        .sidebar-logout {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .header h1 {
+            background: linear-gradient(135deg, #ff0080, #40e0d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+
+        .user-info p {
+            color: #00d4ff;
+            font-size: 0.9rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(64, 224, 208, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.2);
+        }
+
+        .card h3 {
+            color: #ff0080;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: #00d4ff;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .card-desc {
+            color: #40e0d0;
+            font-size: 0.9rem;
+        }
+
+        .section {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(255, 0, 128, 0.05) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #ff0080;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #40e0d0;
+            padding-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.5);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <div class="logo-section">
-            <h2>GLAMFLOW</h2>
-        </div>
-        <nav class="nav-menu">
-            <a href="#" class="nav-item active" data-page="overview">
-                <span class="icon">📊</span> Overview
-            </a>
-            <a href="#" class="nav-item" data-page="chatbot">
-                <span class="icon">💬</span> Chatbot
-            </a>
-            <a href="#" class="nav-item" data-page="billing">
-                <span class="icon">💳</span> Billing
-            </a>
-            <a href="#" class="nav-item" data-page="settings">
-                <span class="icon">⚙️</span> Settings
-            </a>
-        </nav>
-        <div class="sidebar-footer">
-            <button class="logout-btn">Sign Out</button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="dashboard-header">
-            <div class="header-left">
-                <h1 id="page-title">Welcome to GLAMFLOW AI</h1>
-                <p id="page-subtitle">Your beauty business automation dashboard</p>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo">GLAMFLOW AI</div>
+            <ul class="sidebar-menu">
+                <li class="active" onclick="showSection('overview')">📊 Overview</li>
+                <li onclick="showSection('chatbot')">🤖 Chatbot Manager</li>
+                <li onclick="showSection('conversations')">💬 Conversations</li>
+                <li onclick="showSection('settings')">⚙️ Settings</li>
+            </ul>
+            <div class="sidebar-logout">
+                <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
-            <div class="header-right">
-                <div class="user-profile">
-                    <img id="user-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23667eea'/%3E%3C/svg%3E" alt="User" class="avatar">
-                    <div class="user-info">
-                        <p>Loading...</p>
-                        <p>Loading...</p>
-                    </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Welcome to GLAMFLOW AI</h1>
+                <div class="user-info" id="user-info">
+                    <p id="user-email"></p>
+                    <p id="user-business"></p>
                 </div>
             </div>
-        </header>
 
-        <!-- Content Pages (Dynamic - Generated by dashboard.js) -->
-        <div class="content-pages">
-            <!-- Pages will be generated dynamically by dashboard.js -->
+            <!-- Overview Section -->
+            <div id="overview" class="section">
+                <h2>📈 Dashboard Overview</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Total Conversations</h3>
+                        <p>0</p>
+                        <p class="card-desc">This month</p>
+                    </div>
+                    <div class="card">
+                        <h3>Active Users</h3>
+                        <p>0</p>
+                        <p class="card-desc">Today</p>
+                    </div>
+                    <div class="card">
+                        <h3>Response Time</h3>
+                        <p>&lt;1s</p>
+                        <p class="card-desc">Average</p>
+                    </div>
+                </div>
+                <p style="color: #40e0d0; margin-top: 1rem;">✅ Your chatbot is online and ready! Start training it to handle customer conversations.</p>
+            </div>
+
+            <!-- Chatbot Manager Section -->
+            <div id="chatbot" class="section hidden">
+                <h2>🤖 Chatbot Manager</h2>
+                <p style="color: #00d4ff; margin-bottom: 1rem;">Configure your AI chatbot behavior</p>
+                
+                <div style="background: rgba(0, 212, 255, 0.05); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <p style="color: #ff0080; font-weight: 600; margin-bottom: 0.5rem;">Business Name</p>
+                    <input type="text" id="business-name" placeholder="Your business" style="width: 100%; padding: 0.75rem; background: rgba(0, 212, 255, 0.1); border: 1px solid #40e0d0; border-radius: 5px; color: #00d4ff;">
+                </div>
+
+                <div style="background: rgba(0, 212, 255, 0.05); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <p style="color: #ff0080; font-weight: 600; margin-bottom: 0.5rem;">Services Offered</p>
+                    <textarea placeholder="List your services..." style="width: 100%; padding: 0.75rem; background: rgba(0, 212, 255, 0.1); border: 1px solid #40e0d0; border-radius: 5px; color: #00d4ff; min-height: 100px;"></textarea>
+                </div>
+
+                <button class="btn-primary" onclick="alert('✅ Settings saved!')">Save Configuration</button>
+            </div>
+
+            <!-- Conversations Section -->
+            <div id="conversations" class="section hidden">
+                <h2>💬 Recent Conversations</h2>
+                <p style="color: #40e0d0;">No conversations yet. Your bot is ready to receive customer messages!</p>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="section hidden">
+                <h2>⚙️ Settings</h2>
+                <div style="background: rgba(0, 212, 255, 0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <p style="color: #00d4ff; margin: 0.5rem 0;">
+                        <strong>Account:</strong> <span id="settings-email"></span>
+                    </p>
+                    <p style="color: #40e0d0; margin: 0.5rem 0;">
+                        <strong>Plan:</strong> Free Trial (7 days remaining)
+                    </p>
+                    <p style="color: #40e0d0; margin: 0.5rem 0;">
+                        <strong>API Key:</strong> glamflow_sk_live_xxxxx (for developers)
+                    </p>
+                </div>
+                <button class="btn-primary" onclick="alert('Upgrade coming soon!')">Upgrade Plan</button>
+            </div>
         </div>
-    </main>
-
-    <!-- Loading State -->
-    <div id="loading-state" class="loading-state">
-        <div class="spinner"></div>
-        <p>Loading dashboard...</p>
     </div>
 
-    <script src="dashboard.js"></script>
+    <script>
+        // Check if user is logged in
+        function checkLogin() {
+            const user = sessionStorage.getItem('glamflow_user');
+            if (!user) {
+                window.location.href = '/index.html';
+                return;
+            }
+            
+            const userData = JSON.parse(user);
+            document.getElementById('user-email').textContent = userData.email;
+            document.getElementById('user-business').textContent = userData.name || userData.business || 'Beauty Business';
+            document.getElementById('settings-email').textContent = userData.email;
+            document.getElementById('business-name').value = userData.business || userData.name || '';
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Remove active class from all menu items
+            document.querySelectorAll('.sidebar-menu li').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Add active class to clicked menu item
+            event.target.classList.add('active');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.removeItem('glamflow_user');
+                window.location.href = '/index.html';
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', checkLogin);
+    </script>
 </body>
 </html>
 

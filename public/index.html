@@ -147,8 +147,21 @@
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            // Firebase auth will be handled by auth.js
-            console.log('Sign in:', email);
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Store session temporarily
+            sessionStorage.setItem('glamflow_user', JSON.stringify({
+                email: email,
+                name: email.split('@')[0],
+                loginTime: new Date().toISOString()
+            }));
+            
+            // Redirect to dashboard
+            window.location.href = '/dashboard.html';
         }
 
         function handleSignUp(e) {
@@ -157,19 +170,48 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const confirm = document.getElementById('signup-confirm').value;
+            
+            if (!name || !email || !password || !confirm) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
             if (password !== confirm) {
                 alert('Passwords do not match');
                 return;
             }
-            console.log('Sign up:', email);
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters');
+                return;
+            }
+            
+            // Store session temporarily
+            sessionStorage.setItem('glamflow_user', JSON.stringify({
+                email: email,
+                name: name,
+                business: name,
+                loginTime: new Date().toISOString(),
+                isNewUser: true
+            }));
+            
+            alert('✅ Account created! Redirecting to dashboard...');
+            window.location.href = '/dashboard.html';
         }
 
         function handleGoogleSignIn() {
-            console.log('Google sign in');
+            // Simple Google login simulation for now
+            sessionStorage.setItem('glamflow_user', JSON.stringify({
+                email: 'user@gmail.com',
+                name: 'Google User',
+                loginMethod: 'google',
+                loginTime: new Date().toISOString()
+            }));
+            window.location.href = '/dashboard.html';
         }
 
         function handleGoogleSignUp() {
-            console.log('Google sign up');
+            handleGoogleSignIn();
         }
 
         function handleForgotPassword() {
