@@ -16,6 +16,11 @@ auth.onAuthStateChanged(async (user) => {
     currentUser = user;
     await loadUserData();
     initializeDashboard();
+    
+    // Load Stripe script
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/';
+    document.head.appendChild(script);
 });
 
 // Load user data from Firestore
@@ -397,11 +402,19 @@ function setupNavigation() {
 function handleUpgrade(plan, priceInCents) {
     console.log(`Upgrading to ${plan} plan for $${priceInCents / 100}`);
     
-    // TODO: Integrate with Stripe here
-    alert(`Ready to upgrade! This will integrate with Stripe to charge $${priceInCents / 100}.`);
+    // Call Stripe Cloud Function to create checkout session
+    const functions = firebase.functions();
+    const createCheckoutSession = functions.httpsCallable('createCheckoutSession');
     
-    // For now, update user plan directly (DEMO)
-    updateUserSubscription(plan);
+    createCheckoutSession({
+        priceId: `price_${plan}_monthly`, // Update with actual Stripe Price IDs
+        plan: plan
+    }).then((result) => {
+        window.location.href = result.data.url;
+    }).catch((error) => {
+        console.error('Error:', error);
+        alert(`Error: ${error.message}`);
+    });
 }
 
 // Downgrade plan
