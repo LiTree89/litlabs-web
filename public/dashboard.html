@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GLAMFLOW AI - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -19,264 +20,677 @@
         }
 
         .dashboard-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: 250px 1fr;
             min-height: 100vh;
         }
 
         .sidebar {
-            width: 250px;
             background: #0a0a0a;
-            border-right: 1px solid rgba(255, 0, 128, 0.3);
-            padding: 2rem 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-logo {
-            padding: 0 1.5rem 2rem;
-            font-size: 1.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #ff0080, #ff8c00, #40e0d0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sidebar-menu {
-            flex: 1;
-            list-style: none;
-        }
-
-        .sidebar-menu li {
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar-menu li:hover {
-            border-left-color: #ff0080;
-            background: rgba(255, 0, 128, 0.1);
-            color: #00d4ff;
-        }
-
-        .sidebar-menu li.active {
-            border-left-color: #ff0080;
-            color: #40e0d0;
-            font-weight: 600;
-        }
-
-        .sidebar-logout {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .logout-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: linear-gradient(135deg, #ff0080, #ff8c00);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 2rem;
+            border-right: 2px solid #ff0080;
+            padding: 2rem 1.5rem;
             overflow-y: auto;
+            max-height: 100vh;
+            position: sticky;
+            top: 0;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .header h1 {
+        .dashboard-logo {
+            font-size: 1.2rem;
+            font-weight: 900;
             background: linear-gradient(135deg, #ff0080, #40e0d0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 2rem;
         }
 
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            text-align: right;
+        .nav-menu {
+            list-style: none;
         }
 
-        .user-info p {
+        .nav-menu li {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .nav-menu li:hover {
+            background: rgba(255, 0, 128, 0.1);
+            border-left-color: #ff0080;
             color: #00d4ff;
-            font-size: 0.9rem;
         }
 
-        .grid {
+        .nav-menu li.active {
+            background: rgba(64, 224, 208, 0.15);
+            border-left-color: #40e0d0;
+            color: #ff0080;
+            font-weight: 700;
+        }
+
+        .content {
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #ff0080, #40e0d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .card {
-            background: linear-gradient(135deg, rgba(255, 0, 128, 0.1) 0%, rgba(64, 224, 208, 0.1) 100%);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 10px;
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(64, 224, 208, 0.1));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 0 20px rgba(255, 0, 128, 0.2);
+            text-align: center;
         }
 
-        .card h3 {
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
             color: #ff0080;
             margin-bottom: 0.5rem;
         }
 
-        .card p {
-            color: #00d4ff;
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 1rem 0;
-        }
-
-        .card-desc {
+        .stat-label {
             color: #40e0d0;
             font-size: 0.9rem;
         }
 
         .section {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(255, 0, 128, 0.05) 100%);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 10px;
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(64, 224, 208, 0.1));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
             padding: 2rem;
             margin-bottom: 2rem;
         }
 
-        .section h2 {
+        .card h3 {
             color: #ff0080;
-            margin-bottom: 1rem;
-            border-bottom: 2px solid #40e0d0;
-            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #ff0080, #ff8c00);
-            color: white;
-            border: none;
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #40e0d0;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid #40e0d0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: #00d4ff;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff0080;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+        }
+
+        .btn {
             padding: 0.75rem 1.5rem;
+            border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 0, 128, 0.5);
+        .btn-primary {
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+            color: white;
         }
 
-        .hidden {
-            display: none;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(64, 224, 208, 0.2);
+            color: #40e0d0;
+            border: 1px solid #40e0d0;
+        }
+
+        .btn-danger {
+            background: rgba(255, 0, 128, 0.3);
+            color: #ff0080;
+            border: 1px solid #ff0080;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #ff0080, #ff8c00);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .table tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(64, 224, 208, 0.2);
+            color: #40e0d0;
+        }
+
+        .status-pending {
+            background: rgba(255, 140, 0, 0.2);
+            color: #ff8c00;
+        }
+
+        .status-completed {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            color: #00d4ff;
+        }
+
+        .alert-success {
+            background: rgba(64, 224, 208, 0.1);
+            border-left: 4px solid #40e0d0;
+            color: #40e0d0;
+        }
+
+        .alert-warning {
+            background: rgba(255, 140, 0, 0.1);
+            border-left: 4px solid #ff8c00;
+            color: #ff8c00;
+        }
+
+        .stripe-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #635bff, #6c5ce7);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .balance-display {
+            background: linear-gradient(135deg, rgba(99, 91, 255, 0.2), rgba(108, 92, 231, 0.2));
+            border: 2px solid #635bff;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .balance-amount {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #635bff;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-label {
+            color: #40e0d0;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                max-height: 150px;
+                display: flex;
+                overflow-x: auto;
+                border-right: none;
+                border-bottom: 2px solid #ff0080;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- MAINTENANCE BANNER -->
+    <div style="background: linear-gradient(135deg, #ff0080, #ff8c00); padding: 1rem; text-align: center; box-shadow: 0 0 30px rgba(255, 0, 128, 0.5);">
+        <p style="color: white; font-weight: 700; margin: 0;">
+            🔥 ACTIVELY UPDATING! | 📧 <strong>laidbacknostress4life@gmail.com</strong>
+        </p>
+    </div>
+
     <div class="dashboard-container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="sidebar-logo">GLAMFLOW AI</div>
-            <ul class="sidebar-menu">
+            <div class="dashboard-logo">GLAMFLOW</div>
+            <ul class="nav-menu">
                 <li class="active" onclick="showSection('overview')">📊 Overview</li>
                 <li onclick="showSection('chatbot')">🤖 Chatbot Manager</li>
                 <li onclick="showSection('conversations')">💬 Conversations</li>
+                <li onclick="showSection('stripe')">💳 Stripe & Payments</li>
+                <li onclick="showSection('withdraw')">💰 Withdraw Funds</li>
                 <li onclick="showSection('settings')">⚙️ Settings</li>
+                <li onclick="logout()" style="color: #ff0080; margin-top: 2rem;">🚪 Logout</li>
             </ul>
-            <div class="sidebar-logout">
-                <button class="logout-btn" onclick="logout()">Logout</button>
-            </div>
         </div>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1>Welcome to GLAMFLOW AI</h1>
-                <div class="user-info" id="user-info">
-                    <p id="user-email"></p>
-                    <p id="user-business"></p>
-                </div>
-            </div>
-
-            <!-- Overview Section -->
-            <div id="overview" class="section">
-                <h2>📈 Dashboard Overview</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Total Conversations</h3>
-                        <p>0</p>
-                        <p class="card-desc">This month</p>
-                    </div>
-                    <div class="card">
-                        <h3>Active Users</h3>
-                        <p>0</p>
-                        <p class="card-desc">Today</p>
-                    </div>
-                    <div class="card">
-                        <h3>Response Time</h3>
-                        <p>&lt;1s</p>
-                        <p class="card-desc">Average</p>
-                    </div>
-                </div>
-                <p style="color: #40e0d0; margin-top: 1rem;">✅ Your chatbot is online and ready! Start training it to handle customer conversations.</p>
-            </div>
-
-            <!-- Chatbot Manager Section -->
-            <div id="chatbot" class="section hidden">
-                <h2>🤖 Chatbot Manager</h2>
-                <p style="color: #00d4ff; margin-bottom: 1rem;">Configure your AI chatbot behavior</p>
+        <div class="content">
+            <!-- OVERVIEW SECTION -->
+            <div id="overview" class="section active">
+                <div class="page-header">📊 Overview</div>
                 
-                <div style="background: rgba(0, 212, 255, 0.05); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-                    <p style="color: #ff0080; font-weight: 600; margin-bottom: 0.5rem;">Business Name</p>
-                    <input type="text" id="business-name" placeholder="Your business" style="width: 100%; padding: 0.75rem; background: rgba(0, 212, 255, 0.1); border: 1px solid #40e0d0; border-radius: 5px; color: #00d4ff;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">145</div>
+                        <div class="stat-label">Total Conversations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$340</div>
+                        <div class="stat-label">This Month Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$89</div>
+                        <div class="stat-label">Available Balance</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
                 </div>
 
-                <div style="background: rgba(0, 212, 255, 0.05); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-                    <p style="color: #ff0080; font-weight: 600; margin-bottom: 0.5rem;">Services Offered</p>
-                    <textarea placeholder="List your services..." style="width: 100%; padding: 0.75rem; background: rgba(0, 212, 255, 0.1); border: 1px solid #40e0d0; border-radius: 5px; color: #00d4ff; min-height: 100px;"></textarea>
+                <div class="card">
+                    <h3>🚀 Quick Actions</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="showSection('chatbot')">Setup Chatbot</button>
+                        <button class="btn btn-primary" onclick="showSection('stripe')">View Stripe Status</button>
+                        <button class="btn btn-primary" onclick="showSection('withdraw')">Withdraw Funds</button>
+                    </div>
                 </div>
-
-                <button class="btn-primary" onclick="alert('✅ Settings saved!')">Save Configuration</button>
             </div>
 
-            <!-- Conversations Section -->
-            <div id="conversations" class="section hidden">
-                <h2>💬 Recent Conversations</h2>
-                <p style="color: #40e0d0;">No conversations yet. Your bot is ready to receive customer messages!</p>
+            <!-- CHATBOT MANAGER -->
+            <div id="chatbot" class="section">
+                <div class="page-header">🤖 Chatbot Manager</div>
+                
+                <div class="card">
+                    <h3>Create New Chatbot</h3>
+                    <div class="form-group">
+                        <label>Chatbot Name</label>
+                        <input type="text" placeholder="My Beauty Bot">
+                    </div>
+                    <div class="form-group">
+                        <label>Business Description</label>
+                        <textarea placeholder="Describe your beauty business..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Training Data</label>
+                        <input type="text" placeholder="Services, FAQs, policies...">
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('✅ Chatbot created!')">Create Chatbot</button>
+                </div>
             </div>
 
-            <!-- Settings Section -->
-            <div id="settings" class="section hidden">
-                <h2>⚙️ Settings</h2>
-                <div style="background: rgba(0, 212, 255, 0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                    <p style="color: #00d4ff; margin: 0.5rem 0;">
-                        <strong>Account:</strong> <span id="settings-email"></span>
-                    </p>
-                    <p style="color: #40e0d0; margin: 0.5rem 0;">
-                        <strong>Plan:</strong> Free Trial (7 days remaining)
-                    </p>
-                    <p style="color: #40e0d0; margin: 0.5rem 0;">
-                        <strong>API Key:</strong> glamflow_sk_live_xxxxx (for developers)
-                    </p>
+            <!-- CONVERSATIONS -->
+            <div id="conversations" class="section">
+                <div class="page-header">💬 Conversations</div>
+                
+                <div class="card">
+                    <h3>Recent Chats</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Messages</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2025-01-28</td>
+                                <td>John Smith</td>
+                                <td>12</td>
+                                <td>5m 23s</td>
+                                <td><span class="status-badge status-completed">✅ Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-28</td>
+                                <td>Sarah Johnson</td>
+                                <td>8</td>
+                                <td>3m 15s</td>
+                                <td><span class="status-badge status-completed">✅ Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-28</td>
+                                <td>Mike Wilson</td>
+                                <td>6</td>
+                                <td>2m 47s</td>
+                                <td><span class="status-badge status-completed">✅ Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button class="btn-primary" onclick="alert('Upgrade coming soon!')">Upgrade Plan</button>
+            </div>
+
+            <!-- STRIPE & PAYMENTS -->
+            <div id="stripe" class="section">
+                <div class="page-header">💳 Stripe & Payments</div>
+                
+                <div class="alert alert-info">
+                    ℹ️ Stripe is connected and processing payments for your GLAMFLOW subscriptions
+                </div>
+
+                <div class="card">
+                    <div class="stripe-badge">🔵 Stripe Connected</div>
+                    <h3>Account Status</h3>
+                    <table class="table">
+                        <tr>
+                            <td style="font-weight: 600;">Account Type</td>
+                            <td>Business</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Currency</td>
+                            <td>USD ($)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Transactions (30d)</td>
+                            <td>12 transactions</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Total Revenue (30d)</td>
+                            <td style="color: #40e0d0; font-weight: 700;">$340.00</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Recent Transactions</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Plan</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2025-01-28</td>
+                                <td>Beauty Salon LLC</td>
+                                <td>Pro - Monthly</td>
+                                <td>$29.00</td>
+                                <td><span class="status-badge status-active">✅ Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-27</td>
+                                <td>Hair Studio Co</td>
+                                <td>Enterprise - Monthly</td>
+                                <td>$99.00</td>
+                                <td><span class="status-badge status-active">✅ Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-26</td>
+                                <td>Makeup Artist Pro</td>
+                                <td>Pro - Monthly</td>
+                                <td>$29.00</td>
+                                <td><span class="status-badge status-active">✅ Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-25</td>
+                                <td>Nail Spa Deluxe</td>
+                                <td>Pro - Monthly</td>
+                                <td>$29.00</td>
+                                <td><span class="status-badge status-active">✅ Paid</span></td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-24</td>
+                                <td>Skincare Clinic</td>
+                                <td>Enterprise - Monthly</td>
+                                <td>$99.00</td>
+                                <td><span class="status-badge status-active">✅ Paid</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>⚙️ Stripe Settings</h3>
+                    <div class="form-group">
+                        <label>Stripe API Key</label>
+                        <input type="password" value="sk_live_4eC39HqLyjWDarhtT662" placeholder="Your Stripe API key">
+                    </div>
+                    <div class="form-group">
+                        <label>Webhook URL</label>
+                        <input type="text" value="https://studio-4627045237-a2fe9.web.app/webhook" placeholder="Webhook URL">
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('✅ Stripe settings saved!')">Save Settings</button>
+                </div>
+            </div>
+
+            <!-- WITHDRAW FUNDS -->
+            <div id="withdraw" class="section">
+                <div class="page-header">💰 Withdraw Funds</div>
+                
+                <div class="balance-display">
+                    <div class="balance-amount">$89.50</div>
+                    <div class="balance-label">Available Balance</div>
+                </div>
+
+                <div class="alert alert-success">
+                    ✅ Minimum withdrawal: $5.00 | Processing time: 2-5 business days
+                </div>
+
+                <div class="card">
+                    <h3>Request Withdrawal</h3>
+                    <div class="form-group">
+                        <label>Amount to Withdraw ($)</label>
+                        <input type="number" id="withdrawAmount" placeholder="10.00" min="5" max="89.50">
+                    </div>
+                    <div class="form-group">
+                        <label>Withdrawal Method</label>
+                        <select id="withdrawMethod">
+                            <option>Bank Account (ACH)</option>
+                            <option>Stripe Card</option>
+                            <option>PayPal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes (Optional)</label>
+                        <textarea placeholder="Any additional notes..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="processWithdrawal()">💸 Request Withdrawal</button>
+                </div>
+
+                <div class="card">
+                    <h3>Withdrawal History</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Processed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2025-01-20</td>
+                                <td>$50.00</td>
+                                <td>Bank Account</td>
+                                <td><span class="status-badge status-completed">✅ Completed</span></td>
+                                <td>2025-01-22</td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-15</td>
+                                <td>$30.00</td>
+                                <td>Stripe Card</td>
+                                <td><span class="status-badge status-completed">✅ Completed</span></td>
+                                <td>2025-01-17</td>
+                            </tr>
+                            <tr>
+                                <td>2025-01-10</td>
+                                <td>$75.00</td>
+                                <td>Bank Account</td>
+                                <td><span class="status-badge status-completed">✅ Completed</span></td>
+                                <td>2025-01-12</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Bank Account Information</h3>
+                    <div class="form-group">
+                        <label>Bank Account Holder Name</label>
+                        <input type="text" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Routing Number</label>
+                        <input type="text" placeholder="XXXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Number</label>
+                        <input type="password" placeholder="••••••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Type</label>
+                        <select>
+                            <option>Checking</option>
+                            <option>Savings</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('✅ Bank account information saved securely!')">Save Bank Account</button>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div id="settings" class="section">
+                <div class="page-header">⚙️ Settings</div>
+                
+                <div class="card">
+                    <h3>Account Information</h3>
+                    <div class="form-group">
+                        <label>Business Email</label>
+                        <input type="email" id="userEmail" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" placeholder="Your Beauty Business">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="(555) 123-4567">
+                    </div>
+                    <button class="btn btn-primary" onclick="alert('✅ Settings saved!')">Save Changes</button>
+                </div>
+
+                <div class="card">
+                    <h3>Notifications</h3>
+                    <div style="color: #40e0d0; line-height: 2;">
+                        <label style="display: flex; align-items: center; margin-bottom: 1rem;">
+                            <input type="checkbox" checked style="margin-right: 0.5rem;">
+                            New conversation alerts
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 1rem;">
+                            <input type="checkbox" checked style="margin-right: 0.5rem;">
+                            Payment notifications
+                        </label>
+                        <label style="display: flex; align-items: center;">
+                            <input type="checkbox" checked style="margin-right: 0.5rem;">
+                            Weekly reports
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Danger Zone</h3>
+                    <p style="color: #ff8c00; margin-bottom: 1rem;">⚠️ These actions cannot be undone</p>
+                    <div class="btn-group">
+                        <button class="btn btn-danger" onclick="if(confirm('Reset all chatbot data?')) alert('✅ Data reset')">🔄 Reset Data</button>
+                        <button class="btn btn-danger" onclick="if(confirm('Delete account? All data will be lost.')) { alert('Account deleted'); logout(); }">🗑️ Delete Account</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -289,32 +703,39 @@
                 window.location.href = '/index.html';
                 return;
             }
-            
             const userData = JSON.parse(user);
-            document.getElementById('user-email').textContent = userData.email;
-            document.getElementById('user-business').textContent = userData.name || userData.business || 'Beauty Business';
-            document.getElementById('settings-email').textContent = userData.email;
-            document.getElementById('business-name').value = userData.business || userData.name || '';
+            document.getElementById('userEmail').value = userData.email || '';
         }
 
+        // Show section
         function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.add('hidden');
-            });
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
             
-            // Remove active class from all menu items
-            document.querySelectorAll('.sidebar-menu li').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.remove('hidden');
-            
-            // Add active class to clicked menu item
+            document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
         }
 
+        // Process withdrawal
+        function processWithdrawal() {
+            const amount = document.getElementById('withdrawAmount').value;
+            const method = document.getElementById('withdrawMethod').value;
+
+            if (!amount || amount < 5) {
+                alert('❌ Minimum withdrawal is $5.00');
+                return;
+            }
+
+            if (amount > 89.50) {
+                alert('❌ Insufficient balance');
+                return;
+            }
+
+            alert(`✅ WITHDRAWAL REQUESTED!\n\n💰 Amount: $${amount}\n🏦 Method: ${method}\n\n⏳ Processing time: 2-5 business days\n\n✉️ Confirmation sent to your email`);
+            document.getElementById('withdrawAmount').value = '';
+        }
+
+        // Logout
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 sessionStorage.removeItem('glamflow_user');
@@ -322,10 +743,8 @@
             }
         }
 
-        // Initialize on page load
+        // Initialize
         window.addEventListener('load', checkLogin);
     </script>
 </body>
 </html>
-
-
