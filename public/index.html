@@ -220,18 +220,18 @@
 
         // Admin access key system (Konami Code style)
         let accessKeySequence = '';
-        const adminAccessKey = 'GLAMFLOW'; // Type this to access admin dashboard
+        const adminAccessKey = 'Around360'; // Type this to access admin dashboard
         
         document.addEventListener('keydown', function(e) {
             accessKeySequence += e.key.toUpperCase();
             
-            // Keep last 8 characters
-            if (accessKeySequence.length > 8) {
-                accessKeySequence = accessKeySequence.slice(-8);
+            // Keep last 9 characters
+            if (accessKeySequence.length > 9) {
+                accessKeySequence = accessKeySequence.slice(-9);
             }
             
             // Check if user typed the admin key
-            if (accessKeySequence.includes(adminAccessKey)) {
+            if (accessKeySequence.includes(adminAccessKey.toUpperCase())) {
                 showAccessKeyPrompt();
                 accessKeySequence = ''; // Reset
             }
@@ -239,7 +239,7 @@
 
         function showAccessKeyPrompt() {
             const masterKey = prompt('Enter master access key:', '');
-            if (masterKey === 'GLAMFLOW_MASTER_2025') {
+            if (masterKey === '!!litree!!') {
                 sessionStorage.setItem('glamflow_admin_token', 'ADMIN_' + Date.now());
                 window.location.href = '/admin.html';
             } else if (masterKey !== null) {
