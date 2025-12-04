@@ -3,7 +3,7 @@ Integration endpoints for external services (Stripe, Firebase, etc.)
 """
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 import os
 
 from database import get_db
@@ -99,7 +99,7 @@ async def create_subscription(
     return new_subscription
 
 
-@router.get("/subscriptions/user/{user_id}", response_model=list[SubscriptionResponse])
+@router.get("/subscriptions/user/{user_id}", response_model=List[SubscriptionResponse])
 async def get_user_subscriptions(user_id: int, db: Session = Depends(get_db)):
     """Get all subscriptions for a user."""
     subscriptions = db.query(Subscription).filter(
@@ -149,7 +149,7 @@ async def create_transaction(
     return new_transaction
 
 
-@router.get("/transactions/user/{user_id}", response_model=list[TransactionResponse])
+@router.get("/transactions/user/{user_id}", response_model=List[TransactionResponse])
 async def get_user_transactions(user_id: int, db: Session = Depends(get_db)):
     """Get all transactions for a user."""
     transactions = db.query(Transaction).filter(

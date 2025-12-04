@@ -5,6 +5,7 @@ This is the main entry point for the FastAPI backend that integrates
 with the frontend and provides API endpoints for user management,
 subscriptions, and chatbot functionality.
 """
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -21,13 +22,24 @@ from schemas import (
 )
 from integration_endpoints import router as integration_router
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager for startup and shutdown events."""
+    # Startup: Initialize database
+    init_db()
+    yield
+    # Shutdown: cleanup if needed
+
+
 # Create FastAPI application
 app = FastAPI(
     title="GLAMFLOW AI API",
     description="Backend API for GLAMFLOW AI - Beauty Business Automation Platform",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Configure CORS
@@ -54,12 +66,6 @@ app.add_middleware(
 
 # Include routers
 app.include_router(integration_router)
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize database on startup."""
-    init_db()
 
 
 # Health check endpoint
