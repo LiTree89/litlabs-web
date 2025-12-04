@@ -13,7 +13,7 @@ describe('calculator', () => {
   it('multiplies numbers', () => {
     const calculator = new Calculator(); //?
     // Let's fix the error, try clicking Debug code lens on the test
-    expect(calculator.multiply(2, 2)).toBe(5);
+    expect(calculator.multiply(2, 2)).toBe(4);
   });
 });
 
